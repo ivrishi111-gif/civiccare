@@ -4,7 +4,7 @@ import { CATEGORIES } from './constants.js';
 // Gemini runs ONLY on the backend. The API key lives in server/.env
 // and is never sent to the browser.
 const KEY = process.env.GEMINI_API_KEY || '';
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 export const aiEnabled = Boolean(KEY);
 const client = KEY ? new GoogleGenAI({ apiKey: KEY }) : null;
 
@@ -17,6 +17,25 @@ title: a short title, maximum 8 words
 description: 1-2 neutral, factual sentences in English
 severity: "low" | "medium" | "high"
 confidence: an integer from 0 to 100`;
+
+// Small retry helper: Gemini free tier occasionally returns 429/503
+// ("high demand"). Retry twice with a pause before giving up.
+async function withRetry(fn, label) {
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e;
+      const msg = String(e?.message || e?.status?.message || e);
+      const transient = /429|503|high demand|resource exhausted|overloaded/i.test(msg);
+      if (!transient || attempt === 2) throw e;
+      console.log(`[ai] ${label}: transient error (${msg.slice(0, 80)}) — retry ${attempt + 1} in ${attempt === 0 ? 3 : 8}s`);
+      await new Promise((r) => setTimeout(r, attempt === 0 ? 3000 : 8000));
+    }
+  }
+  throw lastErr;
+}
 
 function parseJson(text) {
   let t = String(text || '').trim();
@@ -68,11 +87,15 @@ export async function analyzeImage({ image, text } = {}) {
     parts.push({ inlineData: { mimeType: mime, data } });
   }
 
-  const res = await client.models.generateContent({
-    model: MODEL,
-    contents: [{ role: 'user', parts }],
-    config: { responseMimeType: 'application/json' },
-  });
+  const res = await withRetry(
+    () =>
+      client.models.generateContent({
+        model: MODEL,
+        contents: [{ role: 'user', parts }],
+        config: { responseMimeType: 'application/json' },
+      }),
+    'analyze'
+  );
   const out = parseJson(res.text);
   return {
     demo: false,
@@ -91,22 +114,26 @@ export async function improveText({ text } = {}) {
   if (!client) {
     return { demo: true, description: t.slice(0, 500) };
   }
-  const res = await client.models.generateContent({
-    model: MODEL,
-    contents: [
-      {
-        role: 'user',
-        parts: [
+  const res = await withRetry(
+    () =>
+      client.models.generateContent({
+        model: MODEL,
+        contents: [
           {
-            text: `Rewrite this citizen's note about a public problem into ONE clear, polite, formal sentence (max 40 words) suitable for an official civic complaint. Return ONLY JSON: {"description": "..."}.
+            role: 'user',
+            parts: [
+              {
+                text: `Rewrite this citizen's note about a public problem into ONE clear, polite, formal sentence (max 40 words) suitable for an official civic complaint. Return ONLY JSON: {"description": "..."}.
 
 Note: ${t.slice(0, 500)}`,
+              },
+            ],
           },
         ],
-      },
-    ],
-    config: { responseMimeType: 'application/json' },
-  });
+        config: { responseMimeType: 'application/json' },
+      }),
+    'improve'
+  );
   const out = parseJson(res.text);
   return { demo: false, description: String(out.description || t).slice(0, 500) };
 }
