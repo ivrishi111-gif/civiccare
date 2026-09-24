@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-bold bg-ocean-600 text-white hover:bg-ocean-700 shadow-sm transition active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none px-5 py-3;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-bold border-2 border-ocean-600 text-ocean-700 hover:bg-ocean-50 transition active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none px-5 py-3;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-semibold bg-ocean-100 text-ocean-800 hover:bg-ocean-200 transition active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none px-4 py-2.5;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-semibold bg-red-100 text-red-600 hover:bg-red-500 hover:text-white transition active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none px-4 py-2.5;
+  }
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-slate-200/70;
+  }
+  .label {
+    @apply block text-sm font-bold text-slate-600 mb-1.5;
+  }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  80% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop {
+  animation: pop 0.4s ease-out;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
