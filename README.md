@@ -88,7 +88,7 @@ Demo-mode data resets when the server restarts.
 | `SUPABASE_ANON_KEY`          | no*      | Same page. Public-safe, but only the server uses it here.    |
 | `SUPABASE_SERVICE_ROLE_KEY`  | no*      | Same page. **Secret — backend only.**                        |
 | `GEMINI_API_KEY`             | no*      | From Google AI Studio. **Secret — backend only.**            |
-| `GEMINI_MODEL`               | no       | Default `gemini-2.5-flash`.                                   |
+| `GEMINI_MODEL`               | no       | Default `gemini-3.6-flash`.                                   |
 
 \* Without these the app runs in **demo mode** (in-memory DB, mocked AI).
 
