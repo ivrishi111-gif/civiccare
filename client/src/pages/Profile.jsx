@@ -1,72 +1,68 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../api.js';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
+import { useI18n, LANGUAGES } from '../i18n.jsx';
+import { APP_NAME } from '../config.js';
 
 export default function Profile() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const [stats, setStats] = useState(null);
+  const { t, lang, setLang } = useI18n();
+  if (!user) return null;
 
-  useEffect(() => {
-    api('/api/complaints')
-      .then((d) => {
-        const cs = d.complaints;
-        setStats({
-          total: cs.length,
-          open: cs.filter((c) => c.status === 'open').length,
-          progress: cs.filter((c) => c.status === 'in_progress').length,
-          resolved: cs.filter((c) => c.status === 'resolved').length,
-        });
-      })
-      .catch(() => {});
-  }, []);
+  const initial = (user.name || 'U').trim().charAt(0).toUpperCase();
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="card p-6 text-center">
-        <div className="mx-auto w-20 h-20 rounded-full bg-ocean-100 flex items-center justify-center text-4xl">
-          👤
+    <div className="max-w-xl mx-auto space-y-5">
+      <div className="bg-white rounded-3xl border border-sky-100 shadow-sm p-6 text-center">
+        <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-sky-500 to-teal-400 text-white text-3xl font-black flex items-center justify-center shadow-lg">
+          {initial}
         </div>
-        <h1 className="mt-3 text-2xl font-extrabold text-slate-800">{user.name}</h1>
-        <p className="text-sm text-slate-500">{user.email}</p>
+        <h1 className="mt-3 text-2xl font-black text-sky-900">{user.name}</h1>
+        <p className="text-slate-500 text-sm mt-0.5">
+          {user.email || (user.phone ? `📱 ${user.phone}` : APP_NAME)}
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-center">
-        {[
-          ['Total', stats?.total],
-          ['Open', stats?.open],
-          ['In Progress', stats?.progress],
-          ['Resolved', stats?.resolved],
-        ].map(([label, val]) => (
-          <div key={label} className="card py-3">
-            <p className="text-xl font-extrabold text-ocean-600">{val ?? '–'}</p>
-            <p className="text-[11px] text-slate-400 font-semibold">{label}</p>
-          </div>
-        ))}
+      {/* language */}
+      <div className="bg-white rounded-3xl border border-sky-100 shadow-sm p-5">
+        <h2 className="font-black text-lg text-sky-900">🌐 {t('profile.language')}</h2>
+        <p className="text-sm text-slate-500 mt-0.5">{t('profile.languageHint')}</p>
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          {LANGUAGES.map((l) => (
+            <button
+              key={l.code}
+              onClick={() => setLang(l.code)}
+              className={`py-3 rounded-2xl font-black border-2 ${
+                lang === l.code
+                  ? 'bg-sky-600 text-white border-sky-600'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-sky-300'
+              }`}
+            >
+              {l.native}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-4 card divide-y divide-slate-100">
-        <Link to="/dashboard" className="flex items-center gap-3 px-5 py-4 font-semibold text-slate-700 hover:bg-slate-50">
-          📋 My complaints
-        </Link>
-        <Link to="/report" className="flex items-center gap-3 px-5 py-4 font-semibold text-slate-700 hover:bg-slate-50">
-          📷 Report a problem
-        </Link>
-        <button
-          onClick={() => {
-            logout();
-            navigate('/');
-          }}
-          className="w-full flex items-center gap-3 px-5 py-4 font-semibold text-red-600 hover:bg-red-50"
-        >
-          🚪 Logout
-        </button>
-      </div>
+      <Link
+        to="/complaints"
+        className="block bg-white rounded-3xl border border-sky-100 shadow-sm p-5 font-black text-slate-700 hover:bg-sky-50"
+      >
+        {t('profile.myComplaints')} →
+      </Link>
+      <Link
+        to="/new"
+        className="block bg-white rounded-3xl border border-sky-100 shadow-sm p-5 font-black text-slate-700 hover:bg-sky-50"
+      >
+        {t('profile.report')} →
+      </Link>
+      <button
+        onClick={() => logout('user')}
+        className="w-full bg-white rounded-3xl border-2 border-red-200 shadow-sm p-5 font-black text-red-600 hover:bg-red-50"
+      >
+        {t('profile.logout')}
+      </button>
 
-      <p className="mt-4 text-center text-xs text-slate-400">
-        CIVICCARE is a citizen-reporting concept, not an official government website.
-      </p>
+      <p className="text-center text-xs text-slate-400 px-4">{t('profile.disclaimer')}</p>
     </div>
   );
 }

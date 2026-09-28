@@ -1,126 +1,156 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../components/Logo.jsx';
-import { CATEGORIES, CAT_LIST } from '../constants.js';
+import { useAuth } from '../auth.jsx';
+import { useI18n } from '../i18n.jsx';
+import { CATEGORIES, CATEGORY_ICONS } from '../constants.js';
+import DemoVideo from '../components/DemoVideo.jsx';
+import { DEMO_VIDEO_URL } from '../config.js';
 
-const STEPS = [
-  { icon: '📷', title: '1. Capture', text: 'Take a photo of the problem — pothole, garbage, broken light…' },
-  { icon: '✨', title: '2. AI helps', text: 'AI suggests a category and description. You review and edit it.' },
-  { icon: '📩', title: '3. Submit', text: 'Add the location and submit. You get a unique complaint ID.' },
-  { icon: '📊', title: '4. Track', text: 'Follow your complaint from Open to Resolved, any time.' },
-];
+function FirstVisitBanner() {
+  const { t } = useI18n();
+  const { user } = useAuth();
+  const [dismissed, setDismissed] = useState(() => localStorage.getItem('cc_demo_seen') === '1');
+  if (dismissed || user) return null;
+  return (
+    <div className="mb-6 rounded-2xl bg-gradient-to-r from-sky-600 to-teal-500 text-white px-5 py-4 flex flex-col sm:flex-row items-center gap-3 shadow-lg">
+      <div className="flex-1 text-center sm:text-left">
+        <div className="font-black text-lg">{t('demo.newUser')}</div>
+        <div className="text-sky-100 text-sm">{t('demo.hint')}</div>
+      </div>
+      <div className="flex gap-2 w-full sm:w-auto">
+        <a
+          href="#demo"
+          className="flex-1 sm:flex-none bg-white text-sky-700 font-black rounded-xl px-4 py-2.5 text-center hover:bg-sky-50"
+        >
+          ▶ {t('demo.watch')}
+        </a>
+        <button
+          onClick={() => {
+            localStorage.setItem('cc_demo_seen', '1');
+            setDismissed(true);
+          }}
+          className="bg-sky-800/40 text-white font-bold rounded-xl px-4 py-2.5 hover:bg-sky-800/60"
+        >
+          ✕ {t('demo.skip')}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function Landing() {
+  const { t } = useI18n();
+  const { user } = useAuth();
+
   return (
     <div>
-      {/* Hero */}
-      <section className="pt-8 md:pt-14 pb-12 text-center">
-        <div className="flex justify-center">
-          <Logo size={88} />
-        </div>
-        <h1 className="mt-6 text-4xl md:text-5xl font-extrabold tracking-tight text-ocean-800">
-          See a problem?
-          <br />
-          <span className="text-ocean-500">Report it in 2 minutes.</span>
-        </h1>
-        <p className="mt-4 max-w-xl mx-auto text-lg text-slate-500">
-          Photograph a public problem, let AI help you describe it, and track it until it is fixed. Simple for
-          everyone — no confusion, no jargon.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link to="/report" className="btn-primary text-lg px-8 py-4">
-            📷 Report a Problem
-          </Link>
-          <a href="#how" className="btn-outline text-lg px-8 py-4">
-            How it works
-          </a>
-        </div>
+      <FirstVisitBanner />
 
-        {/* Sample complaint card (illustration of a real report) */}
-        <div className="mt-12 max-w-md mx-auto card p-5 text-left shadow-md">
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-xs text-slate-400">CS-2026-000123</span>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-cyan-100 text-cyan-800">IN PROGRESS</span>
-          </div>
-          <p className="mt-2 font-bold text-slate-800">🕳️ Pothole near the bus stop</p>
-          <p className="text-sm text-slate-500 mt-1">MG Road · 23 Sep 2026</p>
-          <div className="mt-4 flex items-center gap-2">
-            {['Submitted', 'Assigned', 'Work', 'Done'].map((s, i) => (
-              <div key={s} className="flex-1">
-                <div className={`h-1.5 rounded-full ${i < 2 ? 'bg-ocean-500' : 'bg-slate-200'}`} />
-                <p className="text-[10px] text-slate-400 mt-1">{s}</p>
-              </div>
-            ))}
-          </div>
+      {/* Hero */}
+      <section className="text-center py-8 md:py-14">
+        <h1 className="text-4xl md:text-5xl font-black text-sky-900 leading-tight">
+          {t('hero.title1')}
+          <br />
+          <span className="text-teal-600">{t('hero.title2')}</span>
+        </h1>
+        <p className="max-w-2xl mx-auto mt-4 text-lg text-slate-600">{t('hero.subtitle')}</p>
+        <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            to={user ? '/new' : '/login'}
+            className="bg-sky-600 hover:bg-sky-700 text-white font-black text-lg px-8 py-4 rounded-2xl shadow-lg"
+          >
+            {t('hero.report')}
+          </Link>
+          <a
+            href="#how"
+            className="border-2 border-sky-300 text-sky-700 font-black text-lg px-8 py-4 rounded-2xl hover:bg-sky-50"
+          >
+            {t('hero.how')}
+          </a>
         </div>
       </section>
 
+      {/* Interactive demo */}
+      <section id="demo" className="py-8 scroll-mt-20">
+        {DEMO_VIDEO_URL ? (
+          <div className="bg-white rounded-3xl border-2 border-sky-200 shadow-xl p-5 md:p-8">
+            <h2 className="text-lg md:text-xl font-black text-sky-900 mb-4">🎬 {t('demo.title')}</h2>
+            <video
+              src={DEMO_VIDEO_URL}
+              controls
+              playsInline
+              className="w-full rounded-2xl border-2 border-slate-200"
+            />
+          </div>
+        ) : (
+          <DemoVideo />
+        )}
+      </section>
+
       {/* How it works */}
-      <section id="how" className="py-12">
-        <h2 className="text-center text-2xl md:text-3xl font-extrabold text-ocean-800">How it works</h2>
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {STEPS.map((s) => (
-            <div key={s.title} className="card p-5 hover:shadow-md transition-shadow">
-              <div className="text-3xl">{s.icon}</div>
-              <h3 className="mt-3 font-bold text-slate-800">{s.title}</h3>
-              <p className="mt-1 text-sm text-slate-500">{s.text}</p>
+      <section id="how" className="py-10 scroll-mt-20">
+        <h2 className="text-2xl md:text-3xl font-black text-sky-900 text-center mb-8">{t('how.title')}</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { icon: '📷', title: t('how.s1t'), text: t('how.s1') },
+            { icon: '✨', title: t('how.s2t'), text: t('how.s2') },
+            { icon: '📨', title: t('how.s3t'), text: t('how.s3') },
+            { icon: '📊', title: t('how.s4t'), text: t('how.s4') },
+          ].map((s) => (
+            <div key={s.title} className="bg-white rounded-2xl border border-sky-100 p-5 shadow-sm">
+              <div className="text-4xl mb-3">{s.icon}</div>
+              <div className="font-black text-lg text-sky-900">{s.title}</div>
+              <div className="text-slate-600 mt-1 text-sm leading-relaxed">{s.text}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* Categories */}
-      <section className="py-8">
-        <h2 className="text-center text-2xl md:text-3xl font-extrabold text-ocean-800">What can you report?</h2>
-        <div className="mt-6 flex flex-wrap justify-center gap-2.5">
-          {CAT_LIST.map((c) => (
-            <span
+      <section className="py-10">
+        <h2 className="text-2xl md:text-3xl font-black text-sky-900 text-center mb-8">
+          {t('categories.title')}
+        </h2>
+        <div className="flex flex-wrap justify-center gap-3">
+          {CATEGORIES.map((c) => (
+            <div
               key={c}
-              className="bg-white border border-slate-200 rounded-full px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm"
+              className="bg-white border-2 border-sky-100 rounded-2xl px-5 py-3 font-bold text-slate-700 shadow-sm"
             >
-              {CATEGORIES[c]} {c}
-            </span>
+              {CATEGORY_ICONS[c]} {c}
+            </div>
           ))}
         </div>
       </section>
 
       {/* Why */}
-      <section className="py-12">
-        <h2 className="text-center text-2xl md:text-3xl font-extrabold text-ocean-800">Why CIVICCARE?</h2>
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="card p-5 text-center">
-            <div className="text-3xl">📱</div>
-            <h3 className="mt-2 font-bold text-slate-800">Simple by design</h3>
-            <p className="text-sm text-slate-500 mt-1">
-              Big buttons, clear words, large text — made for first-time smartphone users.
-            </p>
-          </div>
-          <div className="card p-5 text-center">
-            <div className="text-3xl">✨</div>
-            <h3 className="mt-2 font-bold text-slate-800">AI-assisted</h3>
-            <p className="text-sm text-slate-500 mt-1">
-              AI helps write your complaint — but you always review and confirm before submitting.
-            </p>
-          </div>
-          <div className="card p-5 text-center">
-            <div className="text-3xl">🔒</div>
-            <h3 className="mt-2 font-bold text-slate-800">Private &amp; safe</h3>
-            <p className="text-sm text-slate-500 mt-1">
-              Your reports are visible only to you. We never display personal details publicly.
-            </p>
-          </div>
+      <section className="py-10">
+        <h2 className="text-2xl md:text-3xl font-black text-sky-900 text-center mb-8">{t('why.title')}</h2>
+        <div className="grid md:grid-cols-3 gap-4">
+          {[
+            { icon: '🤝', title: t('why.s1t'), text: t('why.s1') },
+            { icon: '✨', title: t('why.s2t'), text: t('why.s2') },
+            { icon: '🔒', title: t('why.s3t'), text: t('why.s3') },
+          ].map((s) => (
+            <div key={s.title} className="bg-white rounded-2xl border border-sky-100 p-6 shadow-sm">
+              <div className="text-4xl mb-3">{s.icon}</div>
+              <div className="font-black text-lg text-sky-900">{s.title}</div>
+              <div className="text-slate-600 mt-1 leading-relaxed">{s.text}</div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-12">
-        <div className="rounded-3xl bg-gradient-to-r from-ocean-800 to-ocean-500 text-white p-8 md:p-12 text-center">
-          <h2 className="text-2xl md:text-3xl font-extrabold">Ready to make your area better?</h2>
-          <p className="mt-2 text-ocean-100">Create a free account and report your first problem today.</p>
+      <section className="py-10 text-center">
+        <div className="bg-gradient-to-r from-sky-600 to-teal-500 rounded-3xl px-6 py-10 text-white shadow-xl">
+          <h2 className="text-2xl md:text-3xl font-black">{t('cta.title')}</h2>
+          <p className="mt-2 text-sky-100">{t('cta.sub')}</p>
           <Link
-            to="/signup"
-            className="mt-6 inline-block bg-white text-ocean-800 font-bold rounded-xl px-8 py-3.5 hover:bg-ocean-50 transition"
+            to={user ? '/new' : '/login'}
+            className="inline-block mt-6 bg-white text-sky-700 font-black text-lg px-8 py-4 rounded-2xl shadow hover:bg-sky-50"
           >
-            Get started — it&apos;s free
+            {t('cta.button')}
           </Link>
         </div>
       </section>

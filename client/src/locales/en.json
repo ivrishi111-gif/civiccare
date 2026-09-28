@@ -1,0 +1,104 @@
+{
+  "nav": { "home": "Home", "report": "Report", "myComplaints": "My Complaints", "profile": "Profile", "login": "Login", "signup": "Sign up free", "logout": "Logout", "authority": "Authority Login" },
+  "tagline": "See it. Report it. Track it.",
+  "footer": {
+    "slogan": "See it. Report it. Track it. Improve India.",
+    "disclaimer": "A citizen-reporting concept · Not an official government website."
+  },
+  "hero": {
+    "title1": "See a problem?",
+    "title2": "Report it in 2 minutes.",
+    "subtitle": "Photograph a public problem, let AI help you describe it, and track it until it is fixed. Simple for everyone — no confusion, no jargon.",
+    "report": "📷 Report a Problem",
+    "how": "How it works"
+  },
+  "demo": {
+    "newUser": "New to CIVICCARE?",
+    "watch": "Watch a quick demo",
+    "skip": "Skip demo",
+    "title": "See how it works — a 30-second demo",
+    "hint": "No sign-up needed to watch",
+    "steps": {
+      "1": "Open CIVICCARE and press REPORT",
+      "2": "Take a photo of the problem",
+      "3": "AI suggests the category & description",
+      "4": "You review and edit",
+      "5": "Submit and get a complaint ID",
+      "6": "Track it until it is fixed",
+      "7": "Before & after photos as proof"
+    }
+  },
+  "how": {
+    "title": "How it works",
+    "s1t": "1. Capture", "s1": "Take a photo of the problem — pothole, garbage, broken light…",
+    "s2t": "2. AI helps", "s2": "AI suggests a category and description. You review and edit it.",
+    "s3t": "3. Submit", "s3": "Add the location and submit. You get a unique complaint ID.",
+    "s4t": "4. Track", "s4": "Follow your complaint until it is resolved."
+  },
+  "categories": { "title": "What can you report?" },
+  "why": {
+    "title": "Why CIVICCARE?",
+    "s1t": "Simple by design", "s1": "Big buttons, clear words, large text — made for first-time smartphone users.",
+    "s2t": "AI-assisted", "s2": "AI helps write your complaint — but you always review and confirm before submitting.",
+    "s3t": "Private & safe", "s3": "Your reports are visible only to you. We never display personal details publicly."
+  },
+  "cta": { "title": "Ready to make your area better?", "sub": "Create a free account and report your first problem today.", "button": "Get started — it's free" },
+  "auth": {
+    "welcome": "Welcome back", "welcomeSub": "Log in to see and manage your complaints",
+    "create": "Create your account", "createSub": "Free, and it takes less than a minute",
+    "phoneTab": "Phone + OTP", "emailTab": "Email + Password",
+    "name": "Your name", "email": "Email", "password": "Password", "confirm": "Confirm password",
+    "phone": "Mobile number", "phoneHint": "Enter your 10-digit Indian mobile number",
+    "sendOtp": "Send OTP", "enterOtp": "Enter the 6-digit OTP", "verify": "Verify OTP", "resend": "Resend OTP",
+    "demoOtp": "Demo mode (SMS not connected) — your OTP is",
+    "login": "Log in", "signup": "Sign up free",
+    "haveAccount": "Already have an account?", "noAccount": "New to CIVICCARE?",
+    "demoHint": "Demo logins — Citizen: 9876543210 (OTP appears on screen) · Authority: 9999999999 / Demo@123"
+  },
+  "dash": {
+    "title": "My Complaints", "sub": "Track everything you have reported",
+    "new": "📷 New Report", "emptyT": "No complaints yet", "emptyS": "When you report a problem, it will show up here.", "emptyBtn": "Report your first problem"
+  },
+  "report": {
+    "title": "Report a Problem", "sub": "Takes about 1–2 minutes. You can edit everything before submitting.",
+    "step1": "1 · Photo of the problem", "step1hint": "Tip: stand 2–3 metres away so the whole problem is visible.",
+    "take": "Take a photo or upload one", "remove": "✕ Remove",
+    "step2": "2 · AI assistance", "step2hint": "AI suggests a category and description. You always confirm — it never submits for you.",
+    "analyze": "✨ Analyze photo & note", "improve": "✍️ Improve my note", "thinking": "AI is thinking…",
+    "aiNote": "✨ AI suggestion — please review and edit it before submitting. AI can be wrong.",
+    "step3": "3 · Complaint details", "titleF": "Title", "categoryF": "Category", "descF": "Description",
+    "descPh": "What happened? Where exactly? How long has it been like this?",
+    "locF": "Location (optional)", "locPh": "Area / street / landmark", "useLoc": "📍 Use my location",
+    "submit": "Submit Complaint", "submitting": "Submitting…",
+    "disclaimer": "AI-generated suggestions may be incorrect. Please review before submitting."
+  },
+  "success": {
+    "title": "Complaint submitted!", "sub": "Thank you for helping make your area better.",
+    "idLabel": "Your complaint ID", "track": "Track Complaint", "another": "Report another"
+  },
+  "detail": {
+    "notFoundT": "Complaint not found", "notFoundS": "You can only see complaints that you submitted.", "back": "Back to my complaints",
+    "progress": "Progress", "proof": "Before / After proof",
+    "before": "BEFORE", "after": "AFTER",
+    "proofHint": "When the authority completes the work, they upload an AFTER photo as official proof.",
+    "waitingAfter": "Waiting for the authority's after photo…",
+    "updates": "Authority updates", "noUpdates": "No authority updates yet. You will see them here when the authority takes action.",
+    "edit": "✏️ Edit complaint", "delete": "🗑️ Delete", "save": "Save changes", "cancel": "Cancel"
+  },
+  "profile": {
+    "stats": { "total": "Total", "open": "Open", "progress": "In Progress", "resolved": "Resolved" },
+    "myComplaints": "📋 My complaints", "report": "📷 Report a problem", "logout": "🚪 Logout",
+    "language": "Language", "languageHint": "Choose your preferred language. More languages coming soon.",
+    "disclaimer": "CIVICCARE is a citizen-reporting concept, not an official government website."
+  },
+  "status": { "open": "Open", "assigned": "Assigned", "in_progress": "In Progress", "completed": "Completed", "resolved": "Resolved" },
+  "timeline": { "submitted": "Submitted", "assigned": "Assigned to authority", "in_progress": "Work in progress", "completed": "Work completed", "resolved": "Verified & resolved" },
+  "authority": {
+    "portal": "Authority Portal", "loginTitle": "Authority Login", "loginSub": "For authorized municipal staff only",
+    "all": "All", "assign": "Assign to me", "start": "Start work", "complete": "Complete work", "resolve": "Mark as resolved",
+    "notePlaceholder": "Write an update note…", "postNote": "Post update",
+    "completeHint": "Completing the work requires uploading the AFTER photo (official proof).",
+    "demoNote": "Demo authority account: 9999999999 / Demo@123",
+    "assigned": "Assigned to", "noComplaints": "No complaints in this category yet."
+  }
+}

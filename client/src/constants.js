@@ -1,35 +1,55 @@
-// Shared labels + emoji icons. Keep in sync with server/constants.js
-export const CATEGORIES = {
+// Keep in sync with server/constants.js
+export const CATEGORIES = [
+  'Pothole',
+  'Garbage',
+  'Streetlight',
+  'Water Leak',
+  'Drainage',
+  'Footpath',
+  'Road Damage',
+  'Other',
+];
+
+export const CATEGORY_ICONS = {
   Pothole: '🕳️',
   Garbage: '🗑️',
   Streetlight: '💡',
   'Water Leak': '💧',
   Drainage: '🌊',
-  Footpath: '🚧',
-  'Road Damage': '🛣️',
-  Other: '📸',
+  Footpath: '🚶',
+  'Road Damage': '🚧',
+  Other: '📍',
 };
 
-export const CAT_LIST = Object.keys(CATEGORIES);
-
-export const STATUS = {
-  open: { label: 'Open', cls: 'bg-amber-100 text-amber-800' },
-  in_progress: { label: 'In Progress', cls: 'bg-cyan-100 text-cyan-800' },
-  resolved: { label: 'Resolved', cls: 'bg-green-100 text-green-700' },
+// Status colours — ocean blue / teal / green palette
+export const STATUS_STYLE = {
+  open: { bg: '#e0f2fe', text: '#075985', bar: '#0ea5e9' },
+  assigned: { bg: '#fde68a', text: '#92400e', bar: '#f59e0b' },
+  in_progress: { bg: '#ccfbf1', text: '#115e59', bar: '#14b8a6' },
+  completed: { bg: '#dcfce7', text: '#166534', bar: '#22c55e' },
+  resolved: { bg: '#dcfce7', text: '#15803d', bar: '#16a34a' },
 };
 
-// Friendly short reference shown to users, e.g. CC-4F2A9C1B
-export function refOf(id) {
-  return 'CC-' + String(id).replace(/-/g, '').slice(0, 8).toUpperCase();
+// Progress steps shown on complaint cards
+export const PROGRESS_STEPS = ['open', 'assigned', 'in_progress', 'completed', 'resolved'];
+
+export function statusIndex(status) {
+  const i = PROGRESS_STEPS.indexOf(status);
+  return i === -1 ? 0 : i;
 }
 
-export function fmtDate(iso) {
+export function formatDate(iso) {
   if (!iso) return '';
-  return new Date(iso).toLocaleString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+export function shortId(id) {
+  return (id || '').slice(0, 8).toUpperCase();
 }

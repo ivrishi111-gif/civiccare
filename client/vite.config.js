@@ -10,7 +10,9 @@ export default defineConfig({
     port: 5173,
     allowedHosts: true,
     proxy: {
-      '/api': 'http://127.0.0.1:4000',
+      // API_PORT lets you point the dev UI at a different API instance
+      // (e.g. a demo-mode server on port 4000). Default: 4000.
+      '/api': `http://127.0.0.1:${process.env.API_PORT || 4000}`,
     },
   },
 });

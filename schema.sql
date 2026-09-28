@@ -1,29 +1,41 @@
 -- ============================================================
--- CIVICCARE — Supabase database schema
--- How to run: Supabase Dashboard → SQL Editor → New query
---             → paste this whole file → Run
+-- CIVICCARE — updated schema (v2)
+-- Run the WHOLE file in: Supabase Dashboard → SQL Editor → Run
+-- (It is safe to run again — everything uses "if not exists")
 -- ============================================================
 
-create table if not exists public.users (
+-- 1) users: add mobile number + language preference, email now optional
+alter table public.users add column if not exists phone text unique;
+alter table public.users add column if not exists language text not null default 'en';
+alter table public.users alter column email drop not null;
+
+-- 2) authorities (municipal staff accounts — separate from citizens)
+create table if not exists public.authorities (
   id            uuid primary key default gen_random_uuid(),
   name          text not null,
-  email         text not null unique,
+  phone         text not null unique,
+  department    text not null default 'Municipal Corporation',
+  area          text not null default '',
   password_hash text not null,
+  is_demo       boolean not null default false,
   created_at    timestamptz not null default now()
 );
 
-create table if not exists public.complaints (
-  id          uuid primary key default gen_random_uuid(),
-  user_id     uuid not null references public.users(id) on delete cascade,
-  title       text not null,
-  category    text not null default 'Other',
-  description text not null default '',
-  location    text not null default '',
-  photo       text,   -- stored as a data-URL in the MVP; move to Supabase Storage for production
-  status      text not null default 'open',   -- open | in_progress | resolved
-  created_at  timestamptz not null default now(),
-  updated_at  timestamptz not null default now()
+-- 3) complaints: before/after proof photos + assigned authority
+alter table public.complaints add column if not exists before_image text;
+alter table public.complaints add column if not exists after_image text;
+alter table public.complaints add column if not exists authority_id uuid references public.authorities(id);
+
+-- 4) complaint history (the timeline: who did what, when)
+create table if not exists public.complaint_history (
+  id           uuid primary key default gen_random_uuid(),
+  complaint_id uuid not null references public.complaints(id) on delete cascade,
+  status       text not null,
+  message      text not null default '',
+  actor        text not null default 'system',
+  role         text not null default 'system',   -- user | authority | system
+  created_at   timestamptz not null default now()
 );
 
-create index if not exists complaints_user_created_idx
-  on public.complaints (user_id, created_at desc);
+create index if not exists complaint_history_complaint_idx
+  on public.complaint_history (complaint_id, created_at);
